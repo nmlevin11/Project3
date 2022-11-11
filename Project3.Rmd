@@ -1,0 +1,86 @@
+---
+title: "Project 3"
+author: "Nicole Levin"
+date: "2022-11-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Nicole will fill in the introduction section once we have landed on variables that we are going to use.
+
+
+
+
+Now, we will pull data from one of the data channels. This will later be extended to all of the channels.
+```{r}
+#Load packages
+library(tidyverse)
+library(caret)
+library(leaps)
+#Use a relative path to import data. For now I will stick with the lifestyle channel.
+#My interpretation here is that we need to download the data into our project repo in order to be able to do this with a relative path.
+news_data <- read_csv("OnlineNewsPopularity.csv")
+str(news_data)
+#For now stick with one channel. Later channel can be a parameter.
+channel <- "lifestyle"
+channel_filter <- paste0("data_channel_is_", channel)
+selected_data <- filter(news_data, get(channel_filter) == 1)
+#Now produce some summaries and plots with the data
+#I'll first look at differences in shares for weekend vs. weekday
+weekend_weekday <- selected_data %>% group_by(is_weekend) %>% summarize(mean_by_weekend = mean(shares))
+weekend_weekday
+#Mean shares is higher for weekend than weekday here fir lifestyle, but it isn't a huge difference
+#Look at number of keywords
+g <- ggplot(data=selected_data, aes(x=num_keywords, y=shares))
+g + geom_point() + labs(title = "Shares vs. Number of Keywords")
+#Seems to be a potential positive trend there
+#Now look at mean, median, and quartiles for number of images and number of videos
+summary(selected_data$num_imgs)
+summary(selected_data$num_videos)
+#Now create a scatterplot for each of those variables vs. shares
+g <- ggplot(data=selected_data, aes(x=num_imgs, y=shares))
+g + geom_point() + labs(title = "Shares vs. Number of Images")
+g <- ggplot(data=selected_data, aes(x=num_videos, y=shares))
+g + geom_point() + labs(title = "Shares vs. Number of Videos")
+#Look for correlated variables
+cor(selected_data2)
+```
+
+Now split data for modeling and run linear regression models.
+```{r}
+#Filter down data set to just what could be used in models
+selected_data2 <- select(selected_data, 2:13, 20:61)
+#Split data for modeling into train and test sets.
+set.seed(371)
+train_index <- createDataPartition(selected_data2$shares, p=0.7, list=FALSE)
+data_train <- selected_data2[train_index, ]
+data_test <- selected_data2[-train_index, ]
+#Create a linear regression. I have not gotten a very good one so far.
+linear_reg1 <- lm(shares ~ ., data = data_train)
+#Linear regression of all shows these as significant: num_hrefs, average_token_length, kw_max_avg, kw_avg_avg, self_reference_min_shares, abs_title_subjectivity
+linear_reg2 <- lm(shares ~ num_hrefs + average_token_length + kw_max_avg + kw_avg_avg, self_reference_min_shares + abs_title_subjectivity, data = data_train)
+summary(linear_reg2)
+```
+
+Random Forest Model
+```{r}
+#Insert model here
+```
+
+Boosted Tree Model
+```{r}
+#Create a boosted tree fit. Right now the tuning grid just matches the one from the homework. There could be room for improvement there.
+tuneGrid = expand.grid(n.trees = c(25, 50, 100, 150, 200), interaction.depth = 1:4, shrinkage = 0.1, n.minobsinnode = 10)
+boosted_tree <- train(shares ~ ., data = data_train, method = "gbm", 
+                      preProcess = c("center", "scale"),
+                      trControl = trainControl(method = "cv", number = 10), 
+                      tuneGrid = tuneGrid, verbose = FALSE)
+boosted_tree
+```
+
+Comparison
+```{r}
+```
