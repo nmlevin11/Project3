@@ -17,8 +17,9 @@ The purpose of this repo is to automate reports looking at each data channel of 
 [World report is available here](world.html).  
 
 ## Code for rendering:
-`#Create list of channels
-channel_list <- c("lifestyle", "entertainment", "bus", "socmend", "tech", "world")
+`r`
+#Create list of channels
+channel_list <- c("lifestyle", "entertainment", "bus", "socmend", "tech", "world") 
 output_file <- paste0(channel_list, ".html")
 params <- lapply(channel_list, FUN = function(x){list(channel = x)})
 reports <- tibble(output_file, params)
