@@ -9,12 +9,12 @@ The purpose of this repo is to automate reports looking at each data channel of 
 4. `rmarkdown`
 
 ## Links to Reports:
-[Lifestyle report is available here](lifestyle.html) 
-[Entertainment report is available here](entertainment.html) 
-[Business report is available here](bus.html) 
-[Social media report is available here](socmed.html) 
-[Technology report is available here](tech.html) 
-[World report is available here](world.html) 
+[Lifestyle report is available here](lifestyle.html).  
+[Entertainment report is available here](entertainment.html).  
+[Business report is available here](bus.html).    
+[Social media report is available here](socmed.html).  
+[Technology report is available here](tech.html).   
+[World report is available here](world.html).  
 
 ## Code for rendering:
 `#Create list of channels
