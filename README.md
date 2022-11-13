@@ -22,5 +22,5 @@ channel_list <- c("lifestyle", "entertainment", "bus", "socmed", "tech", "world"
 output_file <- paste0(channel_list, ".md")  
 params <- lapply(channel_list, FUN = function(x){list(channel = x)})  
 reports <- tibble(output_file, params)  
-apply(reports, MARGIN = 1, FUN = function(x){render(input = "Project3.Rmd", output_file = x[[1]], params = x[[2]])} )
+apply(reports, MARGIN = 1, FUN = function(x){render(input = "Project3.Rmd", output_file = x[[1]], params = x[[2]])})
 
