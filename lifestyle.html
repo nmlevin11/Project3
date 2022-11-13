@@ -659,7 +659,8 @@ data.</p>
 <h2 id="summary-statistics">Summary Statistics</h2>
 <p>Before modeling, we’ll look at some basic summary statistics and
 graphs, starting with a summary table of means and standard deviations
-of all of our variables of interest.</p>
+of all of our variables of interest. These will give us an idea of the
+center and spread of the distributions of each of our variables.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Calculate means and standard deviations</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>col_means <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(selected_data)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>col_sds <span class="ot">&lt;-</span> <span class="fu">apply</span>(selected_data,<span class="dv">2</span>,sd)</span>

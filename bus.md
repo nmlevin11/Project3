@@ -69,7 +69,8 @@ selected_data <- selected_data %>% select(num_hrefs, n_tokens_title, kw_avg_avg,
 
 Before modeling, we’ll look at some basic summary statistics and graphs,
 starting with a summary table of means and standard deviations of all of
-our variables of interest.
+our variables of interest. These will give us an idea of the center and
+spread of the distributions of each of our variables.
 
 ``` r
 #Calculate means and standard deviations
