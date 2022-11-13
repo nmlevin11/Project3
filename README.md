@@ -1,5 +1,5 @@
 # Overview:
-The purpose of this repo is to automate reports looking at each data channel of a dataset of features about articles published by Mashable in a period of two years. Each report contains some summary statistics and plots, model-fitting for a linear regression model and a boosted tree, and a comparison of the predictive abilities of the two models. A list of required packages to run the reports in RStudio, links to the individual reports, and the code for rendering the reports are below.
+The purpose of this repo is to automate reports looking at a dataset of features about articles published by Mashable over a two year period. Each report is specific to one of six data channels and contains some summary statistics and plots, model-fitting for a linear regression model and a boosted tree, and a comparison of the predictive abilities of the two models. A list of required packages to run the reports in RStudio, links to the individual reports, and the code for rendering the reports are below.
 
 # Required packages:  
   
