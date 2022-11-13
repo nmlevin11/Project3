@@ -7,6 +7,7 @@ The purpose of this repo is to automate reports looking at each data channel of 
 2. `caret`
 3. `leaps`
 4. `rmarkdown`
+5. `knitr`
 
 ## Links to Reports:
 [Lifestyle report is available here](lifestyle.html).  
