@@ -32,6 +32,7 @@ The packages required for creating this report are the following:
 2.  `caret`
 3.  `leaps`
 4.  `rmarkdown`
+5.  `knitr`
 
 We will start with loading the required packages and reading in the
 data.
@@ -42,6 +43,7 @@ library(tidyverse)
 library(caret)
 library(leaps)
 library(rmarkdown)
+library(knitr)
 
 #Use a relative path to import data. 
 news_data <- read_csv("OnlineNewsPopularity.csv")
@@ -58,13 +60,6 @@ news_data <- read_csv("OnlineNewsPopularity.csv")
 
 ``` r
 #Filter data for just the desired channel.
-params[[1]]
-```
-
-    ## $channel
-    ## [1] "lifestyle"
-
-``` r
 channel_filter <- paste0("data_channel_is_", params[[1]])
 selected_data <- filter(news_data, get(channel_filter) == 1)
 selected_data <- selected_data %>% select(num_hrefs, n_tokens_title, kw_avg_avg, average_token_length, num_imgs, n_non_stop_unique_tokens, shares)
@@ -84,15 +79,13 @@ col_sds <- apply(selected_data,2,sd)
 #Put into a table
 data_table <- rbind(t(col_means), t(col_sds))
 row.names(data_table) <- c("Mean", "Std. Dev.")
-data_table
+kable(data_table)
 ```
 
-    ##           num_hrefs n_tokens_title kw_avg_avg average_token_length num_imgs
-    ## Mean       13.41925       9.765603   3418.686            4.5880959 4.904717
-    ## Std. Dev.  11.53056       1.909371   1364.968            0.5427736 8.150601
-    ##           n_non_stop_unique_tokens   shares
-    ## Mean                     0.6834217 3682.123
-    ## Std. Dev.                0.1160655 8885.017
+|           | num_hrefs | n_tokens_title | kw_avg_avg | average_token_length | num_imgs | n_non_stop_unique_tokens |   shares |
+|:----------|----------:|---------------:|-----------:|---------------------:|---------:|-------------------------:|---------:|
+| Mean      |  13.41925 |       9.765603 |   3418.686 |            4.5880959 | 4.904717 |                0.6834217 | 3682.123 |
+| Std. Dev. |  11.53056 |       1.909371 |   1364.968 |            0.5427736 | 8.150601 |                0.1160655 | 8885.017 |
 
 Next, we will look at a scatterplot of number of links vs. shares. An
 upward trend in this graph would indicate that articles with additional
@@ -272,23 +265,21 @@ pred_boost <- predict(boosted_tree, newdata = data_test)
 results_reg <- postResample(pred_reg, obs = data_test$shares)
 results_boost <- postResample(pred_boost, obs = data_test$shares)
 
-results_reg
+#Create table of results
+results_table <- rbind(t(results_reg), t(results_boost))
+row.names(results_table) <- c("Linear Regression", "Boosted Tree")
+kable(results_table)
 ```
 
-    ##         RMSE     Rsquared          MAE 
-    ## 9.199639e+03 8.519731e-03 3.143117e+03
-
-``` r
-results_boost
-```
-
-    ##         RMSE     Rsquared          MAE 
-    ## 9.221918e+03 3.794715e-03 3.110987e+03
+|                   |     RMSE |  Rsquared |      MAE |
+|:------------------|---------:|----------:|---------:|
+| Linear Regression | 9199.639 | 0.0085197 | 3143.117 |
+| Boosted Tree      | 9221.918 | 0.0037947 | 3110.987 |
 
 ``` r
 #Select the better model
 if(results_reg[1] < results_boost[1]){winner <- "linear regression"
-  }else{winner <- "boosted tree"}
+  } else{winner <- "boosted tree"}
 ```
 
 Based on resulting RMSE, the better performing model for prediction is

@@ -3,7 +3,7 @@ Project 3
 Nicole Levin
 2022-11-07
 
-# Analysis of lifestyle channel
+# Analysis of entertainment channel
 
 ## Introduction
 
@@ -32,6 +32,7 @@ The packages required for creating this report are the following:
 2.  `caret`
 3.  `leaps`
 4.  `rmarkdown`
+5.  `knitr`
 
 We will start with loading the required packages and reading in the
 data.
@@ -42,6 +43,7 @@ library(tidyverse)
 library(caret)
 library(leaps)
 library(rmarkdown)
+library(knitr)
 
 #Use a relative path to import data. 
 news_data <- read_csv("OnlineNewsPopularity.csv")
@@ -58,13 +60,6 @@ news_data <- read_csv("OnlineNewsPopularity.csv")
 
 ``` r
 #Filter data for just the desired channel.
-params[[1]]
-```
-
-    ## $channel
-    ## [1] "lifestyle"
-
-``` r
 channel_filter <- paste0("data_channel_is_", params[[1]])
 selected_data <- filter(news_data, get(channel_filter) == 1)
 selected_data <- selected_data %>% select(num_hrefs, n_tokens_title, kw_avg_avg, average_token_length, num_imgs, n_non_stop_unique_tokens, shares)
@@ -84,15 +79,13 @@ col_sds <- apply(selected_data,2,sd)
 #Put into a table
 data_table <- rbind(t(col_means), t(col_sds))
 row.names(data_table) <- c("Mean", "Std. Dev.")
-data_table
+kable(data_table)
 ```
 
-    ##           num_hrefs n_tokens_title kw_avg_avg average_token_length num_imgs
-    ## Mean       13.41925       9.765603   3418.686            4.5880959 4.904717
-    ## Std. Dev.  11.53056       1.909371   1364.968            0.5427736 8.150601
-    ##           n_non_stop_unique_tokens   shares
-    ## Mean                     0.6834217 3682.123
-    ## Std. Dev.                0.1160655 8885.017
+|           | num_hrefs | n_tokens_title | kw_avg_avg | average_token_length |  num_imgs | n_non_stop_unique_tokens |   shares |
+|:----------|----------:|---------------:|-----------:|---------------------:|----------:|-------------------------:|---------:|
+| Mean      |  10.68967 |      11.001984 |   3155.900 |            4.4768152 |  6.317699 |                0.7632158 | 2970.487 |
+| Std. Dev. |  12.92069 |       2.087105 |   1099.092 |            0.8093148 | 11.627069 |                7.7311595 | 7858.134 |
 
 Next, we will look at a scatterplot of number of links vs. shares. An
 upward trend in this graph would indicate that articles with additional
@@ -181,23 +174,23 @@ summary(linear_reg)
     ## 
     ## Residuals:
     ##    Min     1Q Median     3Q    Max 
-    ##  -7927  -2627  -1816   -226 202320 
+    ## -22173  -2227  -1302   -252 208499 
     ## 
     ## Coefficients:
-    ##                            Estimate Std. Error t value Pr(>|t|)   
-    ## (Intercept)               4454.9719  2494.6005   1.786  0.07433 . 
-    ## num_hrefs                   52.3705    24.4659   2.141  0.03248 * 
-    ## n_tokens_title             -18.1522   118.2496  -0.154  0.87802   
-    ## num_imgs                    34.9501    32.0489   1.091  0.27566   
-    ## average_token_length     -1396.2360   535.0519  -2.610  0.00916 **
-    ## kw_avg_avg                   0.4222     0.1745   2.419  0.01567 * 
-    ## n_non_stop_unique_tokens  5236.8593  2713.3714   1.930  0.05380 . 
+    ##                            Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)              -2583.1916   963.3773  -2.681  0.00736 ** 
+    ## num_hrefs                   25.0314     9.0575   2.764  0.00574 ** 
+    ## n_tokens_title              -7.4592    54.0075  -0.138  0.89016    
+    ## num_imgs                    12.8586     9.8651   1.303  0.19249    
+    ## average_token_length       148.8146   141.3198   1.053  0.29238    
+    ## kw_avg_avg                   1.4745     0.1092  13.508  < 2e-16 ***
+    ## n_non_stop_unique_tokens     4.1077    12.1907   0.337  0.73617    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 8687 on 1465 degrees of freedom
-    ## Multiple R-squared:  0.0142, Adjusted R-squared:  0.01016 
-    ## F-statistic: 3.518 on 6 and 1465 DF,  p-value: 0.001847
+    ## Residual standard error: 7905 on 4934 degrees of freedom
+    ## Multiple R-squared:  0.039,  Adjusted R-squared:  0.03783 
+    ## F-statistic: 33.37 on 6 and 4934 DF,  p-value: < 2.2e-16
 
 ## Boosted Tree Model
 
@@ -222,41 +215,41 @@ boosted_tree
 
     ## Stochastic Gradient Boosting 
     ## 
-    ## 1472 samples
+    ## 4941 samples
     ##    6 predictor
     ## 
     ## Pre-processing: centered (6), scaled (6) 
     ## Resampling: Cross-Validated (10 fold) 
-    ## Summary of sample sizes: 1326, 1324, 1324, 1325, 1325, 1324, ... 
+    ## Summary of sample sizes: 4446, 4446, 4447, 4448, 4447, 4447, ... 
     ## Resampling results across tuning parameters:
     ## 
     ##   interaction.depth  n.trees  RMSE      Rsquared     MAE     
-    ##   1                   25      7689.616  0.004969919  3473.260
-    ##   1                   50      7694.200  0.005000195  3467.484
-    ##   1                  100      7773.941  0.004638845  3501.732
-    ##   1                  150      7796.382  0.004578802  3493.838
-    ##   1                  200      7858.292  0.004029132  3539.090
-    ##   2                   25      7705.719  0.006899969  3480.212
-    ##   2                   50      7785.366  0.008318816  3496.928
-    ##   2                  100      7950.303  0.005176970  3555.074
-    ##   2                  150      8003.926  0.005225411  3561.445
-    ##   2                  200      8104.169  0.004807617  3587.888
-    ##   3                   25      7785.159  0.005772403  3480.375
-    ##   3                   50      7895.011  0.008403095  3538.662
-    ##   3                  100      8034.403  0.006633521  3562.193
-    ##   3                  150      8207.557  0.004342328  3631.637
-    ##   3                  200      8306.385  0.006279705  3684.066
-    ##   4                   25      7784.763  0.005934226  3503.007
-    ##   4                   50      7932.925  0.003687596  3572.796
-    ##   4                  100      8094.360  0.004474277  3664.779
-    ##   4                  150      8226.803  0.004692614  3737.377
-    ##   4                  200      8312.402  0.005117422  3786.792
+    ##   1                   25      7842.803  0.013525785  2981.988
+    ##   1                   50      7834.381  0.011614744  2970.021
+    ##   1                  100      7838.580  0.014016765  2967.353
+    ##   1                  150      7855.495  0.013649818  2974.197
+    ##   1                  200      7836.079  0.015619108  2964.013
+    ##   2                   25      7862.907  0.008609260  2981.295
+    ##   2                   50      7902.399  0.007113950  2981.996
+    ##   2                  100      7919.501  0.006734587  2996.462
+    ##   2                  150      7936.385  0.006285703  3014.790
+    ##   2                  200      7965.822  0.004908787  3025.302
+    ##   3                   25      7875.767  0.012825723  3001.151
+    ##   3                   50      7901.094  0.011346622  2998.388
+    ##   3                  100      7933.852  0.010328497  3010.480
+    ##   3                  150      7965.830  0.009746934  3038.192
+    ##   3                  200      8000.635  0.009945898  3059.811
+    ##   4                   25      7864.740  0.012226159  2987.944
+    ##   4                   50      7909.674  0.011142678  3007.890
+    ##   4                  100      7969.660  0.011448882  3047.907
+    ##   4                  150      7999.754  0.012798549  3069.260
+    ##   4                  200      8052.963  0.013788925  3105.718
     ## 
     ## Tuning parameter 'shrinkage' was held constant at a value of 0.1
     ## Tuning parameter
     ##  'n.minobsinnode' was held constant at a value of 10
     ## RMSE was used to select the optimal model using the smallest value.
-    ## The final values used for the model were n.trees = 25, interaction.depth = 1, shrinkage = 0.1
+    ## The final values used for the model were n.trees = 50, interaction.depth = 1, shrinkage = 0.1
     ##  and n.minobsinnode = 10.
 
 ## Model Comparison
@@ -272,27 +265,25 @@ pred_boost <- predict(boosted_tree, newdata = data_test)
 results_reg <- postResample(pred_reg, obs = data_test$shares)
 results_boost <- postResample(pred_boost, obs = data_test$shares)
 
-results_reg
+#Create table of results
+results_table <- rbind(t(results_reg), t(results_boost))
+row.names(results_table) <- c("Linear Regression", "Boosted Tree")
+kable(results_table)
 ```
 
-    ##         RMSE     Rsquared          MAE 
-    ## 9.199639e+03 8.519731e-03 3.143117e+03
-
-``` r
-results_boost
-```
-
-    ##         RMSE     Rsquared          MAE 
-    ## 9.221918e+03 3.794715e-03 3.110987e+03
+|                   |     RMSE |  Rsquared |      MAE |
+|:------------------|---------:|----------:|---------:|
+| Linear Regression | 7323.071 | 0.0227219 | 2794.578 |
+| Boosted Tree      | 7261.567 | 0.0300640 | 2752.605 |
 
 ``` r
 #Select the better model
 if(results_reg[1] < results_boost[1]){winner <- "linear regression"
-  }else{winner <- "boosted tree"}
+  } else{winner <- "boosted tree"}
 ```
 
 Based on resulting RMSE, the better performing model for prediction is
-the linear regression model.
+the boosted tree model.
 
 ## Citation
 
