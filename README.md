@@ -1,5 +1,5 @@
 # Overview:
-The purpose of this repo is to automate reports looking at each data channel of a dataset of features about articles published by Mashable in a period of two years. Each report contains some summary statistics and plots, model-fitting for a linear regression model and a boosted tree, and a comparison of the predictive abilities of the two models. A list of required packages to run the reports in RStudio, links to the individual reports, and the code for rendering the reports are below.
+The purpose of this repo is to automate reports looking at a dataset of features about articles published by Mashable over a two year period. Each report is specific to one of six data channels and contains some summary statistics and plots, model-fitting for a linear regression model and a boosted tree, and a comparison of the predictive abilities of the two models. A list of required packages to run the reports in RStudio, links to the individual reports, and the code for rendering the reports are below.
 
 # Required packages:  
   
@@ -22,5 +22,5 @@ channel_list <- c("lifestyle", "entertainment", "bus", "socmed", "tech", "world"
 output_file <- paste0(channel_list, ".md")  
 params <- lapply(channel_list, FUN = function(x){list(channel = x)})  
 reports <- tibble(output_file, params)  
-apply(reports, MARGIN = 1, FUN = function(x){render(input = "Project3.Rmd", output_file = x[[1]], params = x[[2]])} )
+apply(reports, MARGIN = 1, FUN = function(x){render(input = "Project3.Rmd", output_file = x[[1]], params = x[[2]])})
 
