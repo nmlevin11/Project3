@@ -1,22 +1,22 @@
 Project 3
 ================
 Nicole Levin
-2022-11-07
+11/14/22
 
 # Analysis of tech channel
 
 ## Introduction
 
 This report analyzes one data channel of a dataset of features about
-articles published by Mashable in a period of two years. This report
+articles published by Mashable over a two year period. This report
 contains some summary statistics and plots, model-fitting for a linear
 regression model and a boosted tree, and a comparison of the predictive
 abilities of the two models. There are six data channels in the complete
 dataset: lifestyle, entertainment, business, social media, technology,
 and world. Results for the other channels can be seen in their
 respective reports. The full dataset contains 61 attributes for each
-article, but we will focus our attention on the following six for
-summarizing and modeling.
+article, but we will focus our attention on the following six predictor
+variables for summarizing and modeling.
 
 1.  num_hrefs: Number of links
 2.  n_tokens_title: Number of words in the title
@@ -90,7 +90,8 @@ kable(data_table)
 
 Next, we will look at a scatterplot of number of links vs. shares. An
 upward trend in this graph would indicate that articles with additional
-links tend to be shared more often.
+links tend to be shared more often. A downward trend would indicate that
+articles with additional links tend to be shared less often.
 
 ``` r
 #Create a scatterplot for num_hrefs vs shares
@@ -102,7 +103,8 @@ g + geom_point() + labs(title = "Shares vs. Number of links")
 
 Next, we will look at a scatterplot of number of images vs. shares. An
 upward trend in this graph would indicate that articles with more images
-tend to be shared more often.
+tend to be shared more often. A downward trend would indicate that
+articles with additional images tend to be shared less often.
 
 ``` r
 #Plot num_imgs vs shares
@@ -114,9 +116,12 @@ g + geom_point() + labs(title = "Shares vs. Number of Images")
 
 Next, we will look at a scatterplot of number of words in the title
 vs. shares. An upward trend in this graph would indicate that articles
-with additional words in the title tend to be shared more often.
+with additional words in the title tend to be shared more often. A
+downward trend would indicate that articles with additional words in the
+title tend to be shared less often.
 
 ``` r
+#Plot words in title vs. shares
 g <- ggplot(data=selected_data, aes(x=n_tokens_title, y=shares))
 g + geom_point() + labs(title = "Shares vs. Number of Words in Title")
 ```
@@ -125,9 +130,12 @@ g + geom_point() + labs(title = "Shares vs. Number of Words in Title")
 
 Next, we will look at a scatterplot of average word length vs. shares.
 An upward trend in this graph would indicate that articles with a larger
-average word length tend to be shared more often.
+average word length tend to be shared more often. A downward trend would
+indicate that articles with a larger average word length tend to be
+shared less often.
 
 ``` r
+#Plot average word length vs. shares
 g <- ggplot(data=selected_data, aes(x=average_token_length, y=shares))
 g + geom_point() + labs(title = "Shares vs. Average Token Length")
 ```
@@ -205,8 +213,8 @@ the trees grow. Boosting typically improves the predictive performance
 over a single tree fit.
 
 ``` r
-#Create a boosted tree fit. Right now the tuning grid just matches the one from the homework. There could be room for improvement there.
-tuneGrid = expand.grid(n.trees = c(25, 50, 100, 150, 200), interaction.depth = 1:4, shrinkage = 0.1, n.minobsinnode = 10)
+#Create a boosted tree fit. 
+tuneGrid = expand.grid(n.trees = c(25, 50, 100, 150, 200), interaction.depth = 1:4, shrinkage = c(0.05, 0.1, 0.2), n.minobsinnode = 10)
 boosted_tree <- train(shares ~ ., data = data_train, method = "gbm", 
                       preProcess = c("center", "scale"),
                       trControl = trainControl(method = "cv", number = 10), 
@@ -224,33 +232,71 @@ boosted_tree
     ## Summary of sample sizes: 4631, 4631, 4631, 4631, 4630, 4630, ... 
     ## Resampling results across tuning parameters:
     ## 
-    ##   interaction.depth  n.trees  RMSE      Rsquared     MAE     
-    ##   1                   25      7293.354  0.002734769  2411.914
-    ##   1                   50      7304.174  0.002771909  2408.932
-    ##   1                  100      7429.096  0.002805778  2427.368
-    ##   1                  150      7545.805  0.002606261  2433.860
-    ##   1                  200      7615.348  0.002172759  2431.365
-    ##   2                   25      7369.197  0.004371453  2423.512
-    ##   2                   50      7415.475  0.005815694  2411.194
-    ##   2                  100      7725.997  0.006915680  2418.557
-    ##   2                  150      7927.422  0.007963965  2407.007
-    ##   2                  200      8166.868  0.009032933  2423.900
-    ##   3                   25      7435.142  0.004407867  2431.315
-    ##   3                   50      7528.312  0.004489219  2435.271
-    ##   3                  100      7726.294  0.004996614  2434.104
-    ##   3                  150      7887.233  0.007135870  2427.895
-    ##   3                  200      8116.915  0.006107401  2452.826
-    ##   4                   25      7426.579  0.006524151  2429.279
-    ##   4                   50      7456.392  0.008257084  2410.570
-    ##   4                  100      7640.435  0.007020645  2445.930
-    ##   4                  150      7865.410  0.006594903  2448.625
-    ##   4                  200      8089.694  0.005807341  2468.698
+    ##   shrinkage  interaction.depth  n.trees  RMSE      Rsquared     MAE     
+    ##   0.05       1                   25      7278.888  0.002638338  2418.192
+    ##   0.05       1                   50      7303.264  0.002881315  2414.277
+    ##   0.05       1                  100      7333.027  0.002818805  2424.543
+    ##   0.05       1                  150      7326.492  0.002792610  2419.816
+    ##   0.05       1                  200      7379.439  0.002522139  2427.970
+    ##   0.05       2                   25      7286.622  0.004218859  2407.812
+    ##   0.05       2                   50      7360.875  0.004961333  2411.840
+    ##   0.05       2                  100      7370.306  0.005825108  2399.858
+    ##   0.05       2                  150      7436.647  0.006079699  2411.465
+    ##   0.05       2                  200      7579.677  0.006258246  2421.808
+    ##   0.05       3                   25      7238.480  0.005285553  2391.505
+    ##   0.05       3                   50      7317.179  0.005049116  2400.793
+    ##   0.05       3                  100      7428.219  0.004950402  2407.715
+    ##   0.05       3                  150      7537.137  0.006515841  2414.670
+    ##   0.05       3                  200      7649.677  0.007558835  2426.637
+    ##   0.05       4                   25      7247.972  0.005081490  2392.892
+    ##   0.05       4                   50      7312.393  0.005681880  2399.612
+    ##   0.05       4                  100      7481.006  0.005416787  2423.925
+    ##   0.05       4                  150      7502.744  0.007665747  2416.452
+    ##   0.05       4                  200      7672.430  0.006440891  2428.663
+    ##   0.10       1                   25      7257.708  0.002340532  2400.347
+    ##   0.10       1                   50      7368.665  0.002573808  2436.128
+    ##   0.10       1                  100      7398.713  0.002915865  2427.889
+    ##   0.10       1                  150      7519.226  0.003076410  2430.232
+    ##   0.10       1                  200      7585.106  0.003061874  2424.939
+    ##   0.10       2                   25      7361.411  0.004460534  2416.376
+    ##   0.10       2                   50      7420.301  0.006688945  2416.376
+    ##   0.10       2                  100      7717.111  0.006353504  2433.459
+    ##   0.10       2                  150      7897.151  0.007017404  2415.401
+    ##   0.10       2                  200      8135.717  0.007764000  2433.238
+    ##   0.10       3                   25      7376.423  0.006187411  2402.418
+    ##   0.10       3                   50      7471.897  0.006726074  2406.584
+    ##   0.10       3                  100      7756.464  0.005683732  2434.596
+    ##   0.10       3                  150      7924.386  0.005288605  2440.155
+    ##   0.10       3                  200      8150.922  0.006126078  2446.190
+    ##   0.10       4                   25      7335.568  0.005722094  2408.329
+    ##   0.10       4                   50      7443.723  0.006457230  2420.169
+    ##   0.10       4                  100      7492.238  0.006029834  2412.683
+    ##   0.10       4                  150      7738.916  0.006744944  2427.416
+    ##   0.10       4                  200      8003.021  0.007342625  2459.110
+    ##   0.20       1                   25      7399.059  0.003130968  2427.501
+    ##   0.20       1                   50      7463.883  0.003709702  2440.465
+    ##   0.20       1                  100      7753.798  0.004618445  2456.404
+    ##   0.20       1                  150      7990.417  0.006348702  2425.632
+    ##   0.20       1                  200      8279.461  0.006733833  2441.812
+    ##   0.20       2                   25      7406.115  0.005132147  2412.932
+    ##   0.20       2                   50      7521.586  0.006801144  2399.090
+    ##   0.20       2                  100      8066.475  0.004925522  2439.385
+    ##   0.20       2                  150      8554.335  0.004537801  2465.844
+    ##   0.20       2                  200      8843.085  0.004672764  2474.628
+    ##   0.20       3                   25      7480.388  0.004799173  2429.965
+    ##   0.20       3                   50      7855.618  0.007210680  2434.796
+    ##   0.20       3                  100      8303.031  0.005319712  2456.496
+    ##   0.20       3                  150      8824.358  0.005252014  2503.921
+    ##   0.20       3                  200      9115.640  0.005716632  2510.366
+    ##   0.20       4                   25      7700.941  0.005831119  2448.531
+    ##   0.20       4                   50      7895.889  0.005913871  2456.899
+    ##   0.20       4                  100      8533.844  0.008741351  2510.206
+    ##   0.20       4                  150      8971.154  0.006065101  2533.166
+    ##   0.20       4                  200      9417.441  0.005264897  2578.287
     ## 
-    ## Tuning parameter 'shrinkage' was held constant at a value of 0.1
-    ## Tuning parameter
-    ##  'n.minobsinnode' was held constant at a value of 10
+    ## Tuning parameter 'n.minobsinnode' was held constant at a value of 10
     ## RMSE was used to select the optimal model using the smallest value.
-    ## The final values used for the model were n.trees = 25, interaction.depth = 1, shrinkage = 0.1
+    ## The final values used for the model were n.trees = 25, interaction.depth = 3, shrinkage = 0.05
     ##  and n.minobsinnode = 10.
 
 ## Model Comparison
@@ -275,7 +321,7 @@ kable(results_table)
 |                   |     RMSE |  Rsquared |      MAE |
 |:------------------|---------:|----------:|---------:|
 | Linear Regression | 4695.133 | 0.0332256 | 2304.114 |
-| Boosted Tree      | 4911.163 | 0.0014346 | 2363.918 |
+| Boosted Tree      | 4771.837 | 0.0166797 | 2307.554 |
 
 ``` r
 #Select the better model
@@ -288,7 +334,8 @@ the linear regression model.
 
 ## Citation
 
-Data used to prepare this report is from:  
+Data used to prepare this report is from:
+
 K. Fernandes, P. Vinagre and P. Cortez. A Proactive Intelligent Decision
 Support System for Predicting the Popularity of Online News. Proceedings
 of the 17th EPIA 2015 - Portuguese Conference on Artificial

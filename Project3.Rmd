@@ -1,7 +1,7 @@
 ---
 title: "Project 3"
-author: "Nicole Levin"
-date: "2022-11-07"
+author: "Nicole Levin"  
+date: "`r format(Sys.time(), '%m/%d/%y')`"
 output: github_document
 params:
   channel: "channel"
@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # Analysis of `r params[[1]]` channel
   
 ## Introduction
-This report analyzes one data channel of a dataset of features about articles published by Mashable in a period of two years. This report contains some summary statistics and plots, model-fitting for a linear regression model and a boosted tree, and a comparison of the predictive abilities of the two models. There are six data channels in the complete dataset: lifestyle, entertainment, business, social media, technology, and world. Results for the other channels can be seen in their respective reports. The full dataset contains 61 attributes for each article, but we will focus our attention on the following six for summarizing and modeling.
+This report analyzes one data channel of a dataset of features about articles published by Mashable over a two year period. This report contains some summary statistics and plots, model-fitting for a linear regression model and a boosted tree, and a comparison of the predictive abilities of the two models. There are six data channels in the complete dataset: lifestyle, entertainment, business, social media, technology, and world. Results for the other channels can be seen in their respective reports. The full dataset contains 61 attributes for each article, but we will focus our attention on the following six predictor variables for summarizing and modeling.
   
 1. num_hrefs: Number of links
 2. n_tokens_title: Number of words in the title 
@@ -60,37 +60,36 @@ col_sds <- apply(selected_data,2,sd)
 data_table <- rbind(t(col_means), t(col_sds))
 row.names(data_table) <- c("Mean", "Std. Dev.")
 kable(data_table)
-
 ```
 
-Next, we will look at a scatterplot of number of links vs. shares. An upward trend in this graph would indicate that articles with additional links tend  to be shared more often.
+Next, we will look at a scatterplot of number of links vs. shares. An upward trend in this graph would indicate that articles with additional links tend  to be shared more often. A downward trend would indicate that articles with additional links tend to be shared less often.
 ```{r}
 #Create a scatterplot for num_hrefs vs shares
 g <- ggplot(data=selected_data, aes(x=num_hrefs, y=shares))
 g + geom_point() + labs(title = "Shares vs. Number of links")
-
 ```
 
-Next, we will look at a scatterplot of number of images vs. shares. An upward trend in this graph would indicate that articles with more images tend  to be shared more often.
+Next, we will look at a scatterplot of number of images vs. shares. An upward trend in this graph would indicate that articles with more images tend  to be shared more often. A downward trend would indicate that articles with additional images tend to be shared less often.
 ```{r}
 #Plot num_imgs vs shares
 g <- ggplot(data=selected_data, aes(x=num_imgs, y=shares))
 g + geom_point() + labs(title = "Shares vs. Number of Images")
 ```
 
-Next, we will look at a scatterplot of number of words in the title vs. shares. An upward trend in this graph would indicate that articles with additional words in the title tend  to be shared more often.
+Next, we will look at a scatterplot of number of words in the title vs. shares. An upward trend in this graph would indicate that articles with additional words in the title tend  to be shared more often. A downward trend would indicate that articles with additional words in the title tend to be shared less often.
 
 ```{r}
+#Plot words in title vs. shares
 g <- ggplot(data=selected_data, aes(x=n_tokens_title, y=shares))
 g + geom_point() + labs(title = "Shares vs. Number of Words in Title")
 ```
 
-Next, we will look at a scatterplot of average word length vs. shares. An upward trend in this graph would indicate that articles with a larger average word length tend  to be shared more often.
+Next, we will look at a scatterplot of average word length vs. shares. An upward trend in this graph would indicate that articles with a larger average word length tend  to be shared more often. A downward trend would indicate that articles with a larger average word length tend to be shared less often.
 
 ```{r}
+#Plot average word length vs. shares
 g <- ggplot(data=selected_data, aes(x=average_token_length, y=shares))
 g + geom_point() + labs(title = "Shares vs. Average Token Length")
-
 ```
 
 ## Model Preparation
@@ -110,20 +109,18 @@ The first model we will look at is a basic linear regression model. In linear re
 #Create a linear regression. 
 linear_reg <- lm(shares ~ num_hrefs + n_tokens_title + num_imgs + average_token_length + kw_avg_avg + n_non_stop_unique_tokens, data = data_train)
 summary(linear_reg)
-
 ```
 
 ## Boosted Tree Model
 Tree-based methods are another modeling option available. The methodology for trees is to split the predictor space into regions with different predictions for each region. Boosting trees is a way to improve the predictive ability over a single tree fit. Boosting is slow fitting of trees where trees are grown sequentially. Each tree grown on a modified version of the original data and the predictions update as the trees grow. Boosting typically improves the predictive performance over a single tree fit.
 ```{r}
-#Create a boosted tree fit. Right now the tuning grid just matches the one from the homework. There could be room for improvement there.
-tuneGrid = expand.grid(n.trees = c(25, 50, 100, 150, 200), interaction.depth = 1:4, shrinkage = 0.1, n.minobsinnode = 10)
+#Create a boosted tree fit. 
+tuneGrid = expand.grid(n.trees = c(25, 50, 100, 150, 200), interaction.depth = 1:4, shrinkage = c(0.05, 0.1, 0.2), n.minobsinnode = 10)
 boosted_tree <- train(shares ~ ., data = data_train, method = "gbm", 
                       preProcess = c("center", "scale"),
                       trControl = trainControl(method = "cv", number = 10), 
                       tuneGrid = tuneGrid, verbose = FALSE)
 boosted_tree
-
 ```
 
 ## Model Comparison
@@ -143,7 +140,6 @@ kable(results_table)
 #Select the better model
 if(results_reg[1] < results_boost[1]){winner <- "linear regression"
   } else{winner <- "boosted tree"}
-
 ```
 
 Based on resulting RMSE, the better performing model for prediction is the 
@@ -151,6 +147,7 @@ Based on resulting RMSE, the better performing model for prediction is the
   
 ## Citation
 Data used to prepare this report is from:  
+  
 K. Fernandes, P. Vinagre and P. Cortez. A Proactive Intelligent Decision
 Support System for Predicting the Popularity of Online News. Proceedings
 of the 17th EPIA 2015 - Portuguese Conference on Artificial Intelligence,
