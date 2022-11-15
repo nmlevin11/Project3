@@ -1,7 +1,7 @@
 # Overview:
 The purpose of this repo is to automate reports looking at a dataset of features about articles published by Mashable over a two year period. Each report is specific to one of six data channels and contains some summary statistics and plots, model-fitting for a linear regression model and a boosted tree, and a comparison of the predictive abilities of the two models. A list of required packages to run the reports in RStudio, links to the individual reports, and the code for rendering the reports are below.
 
-y<sub>i</sub> = β<sup>0</sup> + β<sup>1</sup>x<sup>i1</sup> + . . . β<sup>p</sup>x<sup>ip</sup>
+y<sub>i</sub> = β<sub>0</sub> + β<sub>1</sub>x<sub>i1</sub> + . . . β<sub>p</sub>x<sub>ip</sub>
 
 # Required packages:  
   
