@@ -120,7 +120,7 @@ summary(linear_reg)
 ## Boosted Tree Model
 Tree-based methods are another modeling option available. The methodology for trees is to split the predictor space into regions with different predictions for each region. For a continuous response, the prediction for each region is the mean response for the observed values that fall in that predictor region.   
   
-Boosting trees is a way to improve the predictive ability over a single tree fit. Boosting is slow fitting of trees where trees are grown sequentially. Each tree is grown on a modified version of the original data and the predictions update as the trees grow. Boosting typically improves the predictive performance over a single tree fit.  
+Boosting trees is a way to improve the predictive ability over a single tree fit. Boosting is slow fitting of trees where trees are grown sequentially. Each tree is grown on a modified version of the original data and the predictions update as the trees are grown. Boosting typically improves the predictive performance over a single tree fit.  
 ```{r}
 #Create a boosted tree fit. 
 tuneGrid = expand.grid(n.trees = c(25, 50, 100, 150, 200), interaction.depth = 1:4, shrinkage = c(0.05, 0.1, 0.2), n.minobsinnode = 10)

@@ -601,7 +601,7 @@ padding-top: 0px;
 <body>
 
 <h1 id="project-3">Project 3</h1>
-<p>Nicole Levin 11/15/22</p>
+<p>Nicole Levin 11/16/22</p>
 <h1 id="analysis-of-bus-channel">Analysis of bus channel</h1>
 <h2 id="introduction">Introduction</h2>
 <p>This report analyzes one data channel of a dataset of features about
@@ -801,8 +801,9 @@ that fall in that predictor region.</p>
 <p>Boosting trees is a way to improve the predictive ability over a
 single tree fit. Boosting is slow fitting of trees where trees are grown
 sequentially. Each tree is grown on a modified version of the original
-data and the predictions update as the trees grow. Boosting typically
-improves the predictive performance over a single tree fit.</p>
+data and the predictions update as the trees are grown. Boosting
+typically improves the predictive performance over a single tree
+fit.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Create a boosted tree fit. </span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>tuneGrid <span class="ot">=</span> <span class="fu">expand.grid</span>(<span class="at">n.trees =</span> <span class="fu">c</span>(<span class="dv">25</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">150</span>, <span class="dv">200</span>), <span class="at">interaction.depth =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">shrinkage =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="fl">0.2</span>), <span class="at">n.minobsinnode =</span> <span class="dv">10</span>)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>boosted_tree <span class="ot">&lt;-</span> <span class="fu">train</span>(shares <span class="sc">~</span> ., <span class="at">data =</span> data_train, <span class="at">method =</span> <span class="st">&quot;gbm&quot;</span>, </span>

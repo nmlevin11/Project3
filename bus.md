@@ -1,7 +1,7 @@
 Project 3
 ================
 Nicole Levin
-11/15/22
+11/16/22
 
 # Analysis of bus channel
 
@@ -220,8 +220,8 @@ that fall in that predictor region.
 Boosting trees is a way to improve the predictive ability over a single
 tree fit. Boosting is slow fitting of trees where trees are grown
 sequentially. Each tree is grown on a modified version of the original
-data and the predictions update as the trees grow. Boosting typically
-improves the predictive performance over a single tree fit.
+data and the predictions update as the trees are grown. Boosting
+typically improves the predictive performance over a single tree fit.
 
 ``` r
 #Create a boosted tree fit. 
