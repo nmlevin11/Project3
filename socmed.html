@@ -601,7 +601,7 @@ padding-top: 0px;
 <body>
 
 <h1 id="project-3">Project 3</h1>
-<p>Nicole Levin 11/14/22</p>
+<p>Nicole Levin 11/15/22</p>
 <h1 id="analysis-of-socmed-channel">Analysis of socmed channel</h1>
 <h2 id="introduction">Introduction</h2>
 <p>This report analyzes one data channel of a dataset of features about
@@ -612,8 +612,9 @@ abilities of the two models. There are six data channels in the complete
 dataset: lifestyle, entertainment, business, social media, technology,
 and world. Results for the other channels can be seen in their
 respective reports. The full dataset contains 61 attributes for each
-article, but we will focus our attention on the following six predictor
-variables for summarizing and modeling.</p>
+article, but we will focus our attention on shares as the response
+variable and the following six predictor variables for summarizing and
+modeling.</p>
 <ol style="list-style-type: decimal">
 <li>num_hrefs: Number of links</li>
 <li>n_tokens_title: Number of words in the title</li>
@@ -750,14 +751,19 @@ for number of shares.</p>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>data_train <span class="ot">&lt;-</span> selected_data[train_index, ]</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>data_test <span class="ot">&lt;-</span> selected_data[<span class="sc">-</span>train_index, ]</span></code></pre></div>
 <h2 id="linear-regression-model">Linear Regression Model</h2>
-<p>The first model we will look at is a basic linear regression model.
-In linear regression, the best-fit model is found by minimizing the sum
-of the squares of the residuals. The parameter estimates are then used
-in the regression equation for prediction of future values, finding
-confidence intervals for mean values, etc. Linear regression is often
-the simplest option and can be more interpretable than some of the
-ensemble methods, but it often loses out when prediction is the most
-important goal.</p>
+<p>The first model we will look at is a linear regression model. The
+goal with linear regression is to model the linear relationship between
+the predictor variables and the response variable with an equation like
+the one below.</p>
+<p>y<sub>i</sub> = β<sub>0</sub> + β<sub>1</sub>x<sub>i1</sub> + . . . +
+β<sub>p</sub>x<sub>ip</sub></p>
+<p>The best-fit linear model is found by solving for the parameter
+estimates (the betas above) that minimize the sum of the squares of the
+residuals. The regression equation is then used for prediction of future
+values, finding confidence intervals for mean values, etc. Linear
+regression is often the simplest modeling option and can be more
+interpretable than some of the ensemble methods, but it often loses out
+when prediction is the most important goal.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Create a linear regression. </span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>linear_reg <span class="ot">&lt;-</span> <span class="fu">lm</span>(shares <span class="sc">~</span> num_hrefs <span class="sc">+</span> n_tokens_title <span class="sc">+</span> num_imgs <span class="sc">+</span> average_token_length <span class="sc">+</span> kw_avg_avg <span class="sc">+</span> n_non_stop_unique_tokens, <span class="at">data =</span> data_train)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(linear_reg)</span></code></pre></div>
@@ -789,12 +795,14 @@ important goal.</p>
 <h2 id="boosted-tree-model">Boosted Tree Model</h2>
 <p>Tree-based methods are another modeling option available. The
 methodology for trees is to split the predictor space into regions with
-different predictions for each region. Boosting trees is a way to
-improve the predictive ability over a single tree fit. Boosting is slow
-fitting of trees where trees are grown sequentially. Each tree grown on
-a modified version of the original data and the predictions update as
-the trees grow. Boosting typically improves the predictive performance
-over a single tree fit.</p>
+different predictions for each region. For a continuous response, the
+prediction for each region is the mean response for the observed values
+that fall in that predictor region.</p>
+<p>Boosting trees is a way to improve the predictive ability over a
+single tree fit. Boosting is slow fitting of trees where trees are grown
+sequentially. Each tree is grown on a modified version of the original
+data and the predictions update as the trees grow. Boosting typically
+improves the predictive performance over a single tree fit.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Create a boosted tree fit. </span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>tuneGrid <span class="ot">=</span> <span class="fu">expand.grid</span>(<span class="at">n.trees =</span> <span class="fu">c</span>(<span class="dv">25</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">150</span>, <span class="dv">200</span>), <span class="at">interaction.depth =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">shrinkage =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="fl">0.2</span>), <span class="at">n.minobsinnode =</span> <span class="dv">10</span>)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>boosted_tree <span class="ot">&lt;-</span> <span class="fu">train</span>(shares <span class="sc">~</span> ., <span class="at">data =</span> data_train, <span class="at">method =</span> <span class="st">&quot;gbm&quot;</span>, </span>

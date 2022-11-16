@@ -1,7 +1,7 @@
 Project 3
 ================
 Nicole Levin
-11/14/22
+11/15/22
 
 # Analysis of lifestyle channel
 
@@ -15,8 +15,9 @@ abilities of the two models. There are six data channels in the complete
 dataset: lifestyle, entertainment, business, social media, technology,
 and world. Results for the other channels can be seen in their
 respective reports. The full dataset contains 61 attributes for each
-article, but we will focus our attention on the following six predictor
-variables for summarizing and modeling.
+article, but we will focus our attention on shares as the response
+variable and the following six predictor variables for summarizing and
+modeling.
 
 1.  num_hrefs: Number of links
 2.  n_tokens_title: Number of words in the title
@@ -160,14 +161,21 @@ data_test <- selected_data[-train_index, ]
 
 ## Linear Regression Model
 
-The first model we will look at is a basic linear regression model. In
-linear regression, the best-fit model is found by minimizing the sum of
-the squares of the residuals. The parameter estimates are then used in
-the regression equation for prediction of future values, finding
-confidence intervals for mean values, etc. Linear regression is often
-the simplest option and can be more interpretable than some of the
-ensemble methods, but it often loses out when prediction is the most
-important goal.
+The first model we will look at is a linear regression model. The goal
+with linear regression is to model the linear relationship between the
+predictor variables and the response variable with an equation like the
+one below.
+
+y<sub>i</sub> = β<sub>0</sub> + β<sub>1</sub>x<sub>i1</sub> + . . . +
+β<sub>p</sub>x<sub>ip</sub>
+
+The best-fit linear model is found by solving for the parameter
+estimates (the betas above) that minimize the sum of the squares of the
+residuals. The regression equation is then used for prediction of future
+values, finding confidence intervals for mean values, etc. Linear
+regression is often the simplest modeling option and can be more
+interpretable than some of the ensemble methods, but it often loses out
+when prediction is the most important goal.
 
 ``` r
 #Create a linear regression. 
@@ -205,12 +213,15 @@ summary(linear_reg)
 
 Tree-based methods are another modeling option available. The
 methodology for trees is to split the predictor space into regions with
-different predictions for each region. Boosting trees is a way to
-improve the predictive ability over a single tree fit. Boosting is slow
-fitting of trees where trees are grown sequentially. Each tree grown on
-a modified version of the original data and the predictions update as
-the trees grow. Boosting typically improves the predictive performance
-over a single tree fit.
+different predictions for each region. For a continuous response, the
+prediction for each region is the mean response for the observed values
+that fall in that predictor region.
+
+Boosting trees is a way to improve the predictive ability over a single
+tree fit. Boosting is slow fitting of trees where trees are grown
+sequentially. Each tree is grown on a modified version of the original
+data and the predictions update as the trees grow. Boosting typically
+improves the predictive performance over a single tree fit.
 
 ``` r
 #Create a boosted tree fit. 
